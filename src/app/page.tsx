@@ -1,13 +1,228 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import type { IconType } from "react-icons";
+import { FiFileText, FiGithub, FiLinkedin, FiMail } from "react-icons/fi";
+import {
+  SiC,
+  SiCss3,
+  SiDocker,
+  SiExpress,
+  SiGit,
+  SiGithub,
+  SiGo,
+  SiHtml5,
+  SiJavascript,
+  SiLinux,
+  SiMicrosoftsqlserver,
+  SiMongodb,
+  SiMysql,
+  SiNodedotjs,
+  SiPostman,
+  SiPython,
+  SiReact,
+  SiTypescript,
+  SiWindows,
+} from "react-icons/si";
+
+type ExperienceId = "esg" | "freelance";
+type Locale = "es" | "en";
+
+const techIcons: Record<string, IconType> = {
+  Python: SiPython,
+  Go: SiGo,
+  C: SiC,
+  JavaScript: SiJavascript,
+  TypeScript: SiTypescript,
+  HTML: SiHtml5,
+  CSS: SiCss3,
+  React: SiReact,
+  "Node.js": SiNodedotjs,
+  "Express.js": SiExpress,
+  MongoDB: SiMongodb,
+  MySQL: SiMysql,
+  SQLServer: SiMicrosoftsqlserver,
+  Git: SiGit,
+  GitHub: SiGithub,
+  Docker: SiDocker,
+  Postman: SiPostman,
+  "MongoDB Compass": SiMongodb,
+  "Linux (Ubuntu, MSYS2)": SiLinux,
+  Windows: SiWindows,
+};
+
+const content = {
+  es: {
+    nav: [
+      { id: "inicio", label: "Inicio" },
+      { id: "experiencia", label: "Experiencia" },
+      { id: "proyectos", label: "Proyectos" },
+      { id: "stack", label: "Stack" },
+      { id: "formacion", label: "Formacion" },
+      { id: "contacto", label: "Contacto" },
+    ],
+    modeLabel: "Selector de modo",
+    modeLight: "Claro",
+    modeDark: "Oscuro",
+    langLabel: "Idioma",
+    heroText:
+      "Estudiante avanzado de Ingenieria en Sistemas, con foco en backend, automatizacion y scraping para productos digitales.",
+    experienceTitle: "Experiencia profesional",
+    esgPeriod: "Noviembre 2025 - Actualidad",
+    esgTitle: "ESG Latam · Automatizacion y scraping",
+    esgDesc:
+      "Desarrollo de flujos de extraccion de datos desde PDFs y sitios web para acelerar procesos operativos y centralizar informacion util para el equipo.",
+    esgPoints: [
+      "Scraping de PDF y web con foco en calidad de datos.",
+      "Bots de descarga en Python para tareas repetitivas.",
+      "Scripts reutilizables para reducir tiempos manuales.",
+    ],
+    freePeriod: "Modalidad independiente",
+    freeTitle: "Freelance · Soluciones a medida",
+    freeDesc:
+      "Desarrollo de trabajos freelance en automatizacion, scripts backend y resolucion de problemas puntuales para clientes.",
+    freePoints: [
+      "Automatizacion de reportes y pipelines.",
+      "Integraciones REST y mantenimiento en Node.js/Express.",
+      "Soporte tecnico iterativo con entregas rapidas.",
+    ],
+    projectsTitle: "Proyectos academicos y profesionales",
+    projectCards: [
+      {
+        placeholder: "Placeholder Metamapa de Hechos",
+        title: "Metamapa de Hechos",
+        desc: "Plataforma colaborativa de mapeo de acontecimientos con gestion de datos, estadisticas y visualizacion web.",
+      },
+      {
+        placeholder: "Placeholder Sistema Operativo Distribuido",
+        title: "Sistema Operativo Distribuido",
+        desc: "Simulador de sistema operativo con modulos Kernel, CPU, Memoria, IO y Swap comunicados por HTTP.",
+      },
+      {
+        placeholder: "Placeholder BirBnb",
+        title: "BirBnb (clon AirBnb)",
+        desc: "Aplicacion web de reservas con registro de propiedades, filtros de busqueda, notificaciones y despliegue en la nube.",
+      },
+    ],
+    stackTitle: "Stack",
+    stackGroups: [
+      { title: "Lenguajes", items: ["Python", "Go", "C", "JavaScript"] },
+      { title: "Frontend", items: ["HTML", "CSS", "React"] },
+      { title: "Backend", items: ["Node.js", "Express.js", "TypeScript"] },
+      { title: "Bases de datos", items: ["MongoDB", "MySQL", "SQLServer"] },
+      { title: "Herramientas", items: ["Git", "GitHub", "Docker", "Postman", "MongoDB Compass"] },
+      { title: "Sistemas operativos", items: ["Linux (Ubuntu, MSYS2)", "Windows"] },
+    ],
+    educationTitle: "Formacion",
+    educationDegree: "Ingenieria en Sistemas de Informacion",
+    educationSchool: "UTN FRBA · 2022 - Actualidad",
+    skillsTitle: "Habilidades",
+    skills: [
+      "Trabajo en equipo",
+      "Proactividad",
+      "Aprendizaje continuo",
+      "Adaptabilidad",
+      "Diseno y analisis de sistemas",
+      "Gestion de proyectos IT",
+    ],
+    contactCta: "Ver CV en PDF",
+    contactHints: [
+      "Subi tu CV en public/cv/alvaro-federico-gianola.pdf",
+      "Subi tu foto en public/images/fotoLinkedin.jpg",
+      "Imagenes de proyectos: public/images/projects/",
+    ],
+  },
+  en: {
+    nav: [
+      { id: "inicio", label: "Home" },
+      { id: "experiencia", label: "Experience" },
+      { id: "proyectos", label: "Projects" },
+      { id: "stack", label: "Stack" },
+      { id: "formacion", label: "Education" },
+      { id: "contacto", label: "Contact" },
+    ],
+    modeLabel: "Theme mode",
+    modeLight: "Light",
+    modeDark: "Dark",
+    langLabel: "Language",
+    heroText:
+      "Advanced Systems Engineering student focused on backend development, automation, and scraping for digital products.",
+    experienceTitle: "Professional experience",
+    esgPeriod: "November 2025 - Present",
+    esgTitle: "ESG Latam · Automation and scraping",
+    esgDesc:
+      "Built data extraction flows from PDFs and websites to speed up operations and centralize useful team data.",
+    esgPoints: [
+      "PDF and web scraping with data-quality focus.",
+      "Python download bots for repetitive tasks.",
+      "Reusable scripts to reduce manual processing time.",
+    ],
+    freePeriod: "Independent work",
+    freeTitle: "Freelance · Custom solutions",
+    freeDesc:
+      "Freelance work on automation, backend scripts, and focused technical problem solving for clients.",
+    freePoints: [
+      "Report and pipeline automation.",
+      "REST integrations and Node.js/Express maintenance.",
+      "Iterative support with fast deliveries.",
+    ],
+    projectsTitle: "Academic and professional projects",
+    projectCards: [
+      {
+        placeholder: "Placeholder Metamapa de Hechos",
+        title: "Metamapa de Hechos",
+        desc: "Collaborative event-mapping platform with data management, analytics, and web visualization.",
+      },
+      {
+        placeholder: "Placeholder Distributed OS",
+        title: "Distributed Operating System",
+        desc: "Operating system simulator with Kernel, CPU, Memory, IO and Swap modules connected over HTTP.",
+      },
+      {
+        placeholder: "Placeholder BirBnb",
+        title: "BirBnb (AirBnb clone)",
+        desc: "Booking web app with property listing, filtered search, notifications, and cloud deployment.",
+      },
+    ],
+    stackTitle: "Stack",
+    stackGroups: [
+      { title: "Languages", items: ["Python", "Go", "C", "JavaScript"] },
+      { title: "Frontend", items: ["HTML", "CSS", "React"] },
+      { title: "Backend", items: ["Node.js", "Express.js", "TypeScript"] },
+      { title: "Databases", items: ["MongoDB", "MySQL", "SQLServer"] },
+      { title: "Tools", items: ["Git", "GitHub", "Docker", "Postman", "MongoDB Compass"] },
+      { title: "Operating systems", items: ["Linux (Ubuntu, MSYS2)", "Windows"] },
+    ],
+    educationTitle: "Education",
+    educationDegree: "Information Systems Engineering",
+    educationSchool: "UTN FRBA · 2022 - Present",
+    skillsTitle: "Skills",
+    skills: [
+      "Teamwork",
+      "Proactivity",
+      "Continuous learning",
+      "Adaptability",
+      "Systems design and analysis",
+      "IT project management",
+    ],
+    contactCta: "View Resume",
+    contactHints: [
+      "Upload your CV to public/cv/alvaro-federico-gianola.pdf",
+      "Upload your photo to public/images/fotoLinkedin.jpg",
+      "Project images folder: public/images/projects/",
+    ],
+  },
+};
 
 export default function Home() {
   const [mode, setMode] = useState<"light" | "dark">("light");
+  const [locale, setLocale] = useState<Locale>("es");
+  const [openExperience, setOpenExperience] = useState<ExperienceId | null>("esg");
 
   useEffect(() => {
     const savedMode = localStorage.getItem("mode");
+    const savedLocale = localStorage.getItem("locale");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
     const nextMode =
@@ -16,7 +231,11 @@ export default function Home() {
         : prefersDark
           ? "dark"
           : "light";
+
+    const nextLocale = savedLocale === "en" ? "en" : "es";
+
     setMode(nextMode);
+    setLocale(nextLocale);
   }, []);
 
   useEffect(() => {
@@ -25,15 +244,17 @@ export default function Home() {
     localStorage.setItem("mode", mode);
   }, [mode]);
 
-  const modeText = useMemo(() => (mode === "light" ? "Modo claro" : "Modo oscuro"), [mode]);
+  useEffect(() => {
+    document.documentElement.lang = locale;
+    localStorage.setItem("locale", locale);
+  }, [locale]);
 
-  const quickNav = [
-    { id: "inicio", label: "Inicio" },
-    { id: "experiencia", label: "Experiencia" },
-    { id: "stack", label: "Stack" },
-    { id: "formacion", label: "Formacion" },
-    { id: "contacto", label: "Contacto" },
-  ];
+  const t = content[locale];
+  const modeText = useMemo(() => (mode === "light" ? t.modeLight : t.modeDark), [mode, t.modeDark, t.modeLight]);
+
+  const toggleExperience = (id: ExperienceId) => {
+    setOpenExperience((prev) => (prev === id ? null : id));
+  };
 
   return (
     <main className="app-shell relative">
@@ -43,230 +264,278 @@ export default function Home() {
         transition={{ duration: 0.35 }}
         className="site-header"
       >
-        <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-3 px-6 py-3">
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-3 md:px-8">
           <nav className="quick-nav">
-            {quickNav.map((item) => (
+            {t.nav.map((item) => (
               <a key={item.id} href={`#${item.id}`} className="quick-link">
                 {item.label}
               </a>
             ))}
           </nav>
 
-          <div className="mode-switch" aria-label="Selector de modo">
-            <button
-              onClick={() => setMode("light")}
-              className={`mode-btn ${mode === "light" ? "is-active" : ""}`}
-              aria-pressed={mode === "light"}
-              title="Modo claro"
-            >
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
-                <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.8" />
-                <path d="M12 2.5V5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                <path d="M12 19V21.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                <path d="M2.5 12H5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                <path d="M19 12h2.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-              </svg>
-              Claro
-            </button>
-            <button
-              onClick={() => setMode("dark")}
-              className={`mode-btn ${mode === "dark" ? "is-active" : ""}`}
-              aria-pressed={mode === "dark"}
-              title="Modo oscuro"
-            >
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
-                <path
-                  d="M20 14.2A8 8 0 1 1 9.8 4 7 7 0 0 0 20 14.2Z"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              Oscuro
-            </button>
+          <div className="header-controls">
+            <div className="mode-switch" aria-label={t.langLabel}>
+              <button onClick={() => setLocale("es")} className={`mode-btn ${locale === "es" ? "is-active" : ""}`}>
+                ES
+              </button>
+              <button onClick={() => setLocale("en")} className={`mode-btn ${locale === "en" ? "is-active" : ""}`}>
+                EN
+              </button>
+            </div>
+
+            <div className="mode-switch" aria-label={t.modeLabel}>
+              <button
+                onClick={() => setMode("light")}
+                className={`mode-btn ${mode === "light" ? "is-active" : ""}`}
+                aria-pressed={mode === "light"}
+                title={t.modeLight}
+              >
+                {t.modeLight}
+              </button>
+              <button
+                onClick={() => setMode("dark")}
+                className={`mode-btn ${mode === "dark" ? "is-active" : ""}`}
+                aria-pressed={mode === "dark"}
+                title={t.modeDark}
+              >
+                {t.modeDark}
+              </button>
+            </div>
           </div>
         </div>
       </motion.header>
 
-      <section className="mx-auto flex w-full max-w-5xl flex-col px-6 pb-16 pt-28" aria-label={modeText}>
-
-        <section id="inicio" className="panel p-8 md:p-12">
+      <section className="mx-auto flex w-full max-w-6xl flex-col px-6 pb-24 pt-32 md:px-8" aria-label={modeText}>
+        <section id="inicio" className="panel p-10 md:p-14 xl:p-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.22 }}
             transition={{ duration: 0.45 }}
-            className="flex flex-col gap-6"
+            className="flex flex-col gap-8"
           >
-            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
               <div>
-                <p className="muted text-sm uppercase tracking-[0.2em]">Portfolio tecnico</p>
-                <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
+                <h1 className="text-[clamp(2.2rem,6vw,5.4rem)] font-bold leading-[1.02] tracking-tight">
                   Alvaro Federico <span className="accent">Gianola</span>
                 </h1>
-                <p className="muted mt-3 max-w-2xl text-base md:text-lg">
-                  Estudiante avanzado de Ingenieria en Sistemas, con foco en backend, automatizacion
-                  y soluciones de scraping orientadas a negocio.
-                </p>
+                <p className="muted mt-4 max-w-3xl text-[clamp(1.05rem,2.1vw,1.45rem)] leading-relaxed">{t.heroText}</p>
               </div>
 
               <img
-                src="/images/perfil.jpg"
+                src="/images/fotoLinkedin.jpg"
                 alt="Foto de Alvaro Federico"
-                className="h-24 w-24 rounded-2xl border border-[var(--border)] object-cover md:h-28 md:w-28"
+                className="h-44 w-44 rounded-3xl border border-[var(--border)] object-cover shadow-lg shadow-black/10 md:h-56 md:w-56 lg:h-64 lg:w-64"
               />
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <a className="contact-link" href="mailto:alvarogianolao@gmail.com">
                 <span className="icon-wrap" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none">
-                    <path d="M4 7h16v10H4z" stroke="currentColor" strokeWidth="1.7" />
-                    <path d="m5 8 7 5 7-5" stroke="currentColor" strokeWidth="1.7" />
-                  </svg>
+                  <FiMail />
                 </span>
                 Email
               </a>
               <a className="contact-link" href="https://www.linkedin.com/in/alvaro-federico-gianola-otamendi/" target="_blank" rel="noreferrer">
                 <span className="icon-wrap" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none">
-                    <path d="M6 9v9" stroke="currentColor" strokeWidth="1.7" />
-                    <circle cx="6" cy="6" r="1.3" fill="currentColor" />
-                    <path d="M11 18v-5a3 3 0 0 1 6 0v5" stroke="currentColor" strokeWidth="1.7" />
-                    <path d="M11 9v9" stroke="currentColor" strokeWidth="1.7" />
-                  </svg>
+                  <FiLinkedin />
                 </span>
                 LinkedIn
               </a>
               <a className="contact-link" href="https://github.com/AlvaroGianola" target="_blank" rel="noreferrer">
                 <span className="icon-wrap" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M9 19c-4 1.2-4-2-6-2m12 4v-3.2A3 3 0 0 0 14 15c3.6-.4 7.4-1.8 7.4-8a6 6 0 0 0-1.6-4.2 5.5 5.5 0 0 0-.1-4.1s-1.3-.4-4.3 1.6a14.5 14.5 0 0 0-7.8 0c-3-2-4.3-1.6-4.3-1.6a5.5 5.5 0 0 0-.1 4.1A6 6 0 0 0 1.6 7c0 6.2 3.8 7.6 7.4 8a3 3 0 0 0-.9 2.4V21"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  <FiGithub />
                 </span>
                 GitHub
               </a>
               <a className="contact-link" href="/cv/alvaro-federico-gianola.pdf" target="_blank" rel="noreferrer">
                 <span className="icon-wrap" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none">
-                    <path d="M7 3h7l5 5v13H7z" stroke="currentColor" strokeWidth="1.7" />
-                    <path d="M14 3v5h5" stroke="currentColor" strokeWidth="1.7" />
-                    <path d="M10 13h6M10 16h6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-                  </svg>
+                  <FiFileText />
                 </span>
-                CV PDF
+                {locale === "en" ? "Resume" : "CV PDF"}
               </a>
             </div>
           </motion.div>
         </section>
 
-        <section id="experiencia" className="panel mt-6 p-8 md:p-12">
+        <section id="experiencia" className="panel mt-8 p-10 md:p-14 xl:p-16">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.45, delay: 0.1 }}
             className="grid gap-4"
           >
-            <h2 className="section-title">Experiencia profesional</h2>
+            <h2 className="section-title">{t.experienceTitle}</h2>
 
             <article className="mini-card timeline-card">
-              <p className="muted text-sm">Noviembre 2025 - Actualidad</p>
-              <h3 className="card-title mt-1">ESG Latam · Automatizacion y scraping</h3>
-              <p className="muted">
-                Desarrollo de flujos de extraccion de datos desde PDFs y sitios web para acelerar
-                procesos operativos y centralizar informacion util para el equipo.
-              </p>
-              <ul className="muted mt-3 list-disc pl-5 text-sm">
-                <li>Scraping de documentos PDF y fuentes web con enfoque en calidad de datos.</li>
-                <li>Construccion de bots en Python para descargas masivas y tareas repetitivas.</li>
-                <li>Armado de scripts reutilizables para reducir tiempos manuales de procesamiento.</li>
-              </ul>
+              <button
+                className="accordion-trigger"
+                onClick={() => toggleExperience("esg")}
+                aria-expanded={openExperience === "esg"}
+                aria-controls="exp-esg-content"
+              >
+                <span>
+                  <p className="muted text-sm">{t.esgPeriod}</p>
+                  <h3 className="card-title mt-1">{t.esgTitle}</h3>
+                </span>
+                <span className={`accordion-chevron ${openExperience === "esg" ? "is-open" : ""}`} aria-hidden="true">
+                  ▾
+                </span>
+              </button>
+
+              <AnimatePresence initial={false}>
+                {openExperience === "esg" && (
+                  <motion.div
+                    id="exp-esg-content"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.25, ease: "easeInOut" }}
+                    className="accordion-content"
+                  >
+                    <p className="muted text-lg leading-relaxed">{t.esgDesc}</p>
+                    <ul className="muted mt-3 list-disc pl-5 text-base leading-relaxed">
+                      {t.esgPoints.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </article>
 
             <article className="mini-card timeline-card">
-              <p className="muted text-sm">Modalidad independiente</p>
-              <h3 className="card-title mt-1">Freelance · Soluciones a medida</h3>
-              <p className="muted">
-                Desarrollo de trabajos freelance en automatizacion, scripts backend y resolucion de
-                problemas puntuales para clientes y proyectos chicos.
-              </p>
-              <ul className="muted mt-3 list-disc pl-5 text-sm">
-                <li>Automatizacion de reportes y pipelines sencillos con Python.</li>
-                <li>Integraciones REST y mantenimiento de APIs en Node.js/Express.</li>
-                <li>Soporte tecnico para mejoras rapidas y entregas iterativas.</li>
-              </ul>
+              <button
+                className="accordion-trigger"
+                onClick={() => toggleExperience("freelance")}
+                aria-expanded={openExperience === "freelance"}
+                aria-controls="exp-freelance-content"
+              >
+                <span>
+                  <p className="muted text-sm">{t.freePeriod}</p>
+                  <h3 className="card-title mt-1">{t.freeTitle}</h3>
+                </span>
+                <span className={`accordion-chevron ${openExperience === "freelance" ? "is-open" : ""}`} aria-hidden="true">
+                  ▾
+                </span>
+              </button>
+
+              <AnimatePresence initial={false}>
+                {openExperience === "freelance" && (
+                  <motion.div
+                    id="exp-freelance-content"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.25, ease: "easeInOut" }}
+                    className="accordion-content"
+                  >
+                    <p className="muted text-lg leading-relaxed">{t.freeDesc}</p>
+                    <ul className="muted mt-3 list-disc pl-5 text-base leading-relaxed">
+                      {t.freePoints.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </article>
           </motion.div>
         </section>
 
-        <section id="stack" className="panel mt-6 p-8 md:p-12">
+        <section id="proyectos" className="panel mt-8 p-10 md:p-14 xl:p-16">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: 0.2 }}
-            className=""
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.18 }}
+            transition={{ duration: 0.45, delay: 0.18 }}
+            className="grid gap-6"
           >
-            <h2 className="section-title">Stack principal</h2>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {[
-                "Python",
-                "Go",
-                "C",
-                "JavaScript",
-                "TypeScript",
-                "Node.js",
-                "Express",
-                "React",
-                "MongoDB",
-                "Docker",
-                "Git",
-                "Postman",
-              ].map((tech) => (
-                <span key={tech} className="chip">
-                  {tech}
-                </span>
+            <h2 className="section-title">{t.projectsTitle}</h2>
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {t.projectCards.map((project) => (
+                <article key={project.title} className="mini-card project-card">
+                  <div className="project-media-placeholder">{project.placeholder}</div>
+                  <h3 className="card-title mt-3">{project.title}</h3>
+                  <p className="muted text-sm">{project.desc}</p>
+                </article>
               ))}
             </div>
           </motion.div>
         </section>
 
-        <section id="formacion" className="panel mt-6 p-8 md:p-12">
+        <section id="stack" className="panel mt-8 p-10 md:p-14 xl:p-16">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 0.45, delay: 0.2 }}
+            className="grid gap-4"
+          >
+            <h2 className="section-title">{t.stackTitle}</h2>
+            <div className="grid gap-4 md:grid-cols-2">
+              {t.stackGroups.map((group) => (
+                <article key={group.title} className="mini-card">
+                  <h3 className="card-title">{group.title}</h3>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {group.items.map((tech) => {
+                      const Icon = techIcons[tech];
+                      return (
+                        <span key={tech} className="chip stack-chip">
+                          <span className="stack-symbol" aria-hidden="true">
+                            {Icon ? <Icon /> : <FiFileText />}
+                          </span>
+                          {tech}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </motion.div>
+        </section>
+
+        <section id="formacion" className="panel mt-8 p-10 md:p-14 xl:p-16">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.22 }}
             transition={{ duration: 0.45, delay: 0.3 }}
             className="grid gap-4 md:grid-cols-2"
           >
             <article className="mini-card">
-              <h2 className="section-title">Formacion</h2>
-              <p className="mt-2 font-medium">Ingenieria en Sistemas de Informacion</p>
-              <p className="muted">UTN FRBA · 2022 - Actualidad</p>
+              <h2 className="section-title">{t.educationTitle}</h2>
+              <p className="mt-2 font-medium">{t.educationDegree}</p>
+              <p className="muted">{t.educationSchool}</p>
             </article>
 
             <article className="mini-card">
-              <h2 className="section-title">Idiomas y soft skills</h2>
-              <p className="muted mt-2">Ingles intermedio-alto · Trabajo en equipo · Resolucion analitica</p>
+              <h2 className="section-title">{t.skillsTitle}</h2>
+              <ul className="muted mt-3 list-disc pl-5 text-base leading-relaxed">
+                {t.skills.map((skill) => (
+                  <li key={skill}>{skill}</li>
+                ))}
+              </ul>
             </article>
           </motion.div>
         </section>
 
-        <section id="contacto" className="panel mt-6 p-8 md:p-12">
+        <section id="contacto" className="panel mt-8 p-10 md:p-14 xl:p-16">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.35 }}
             transition={{ duration: 0.45, delay: 0.4 }}
             className="flex flex-wrap items-center gap-3"
           >
             <a className="btn btn-primary" href="/cv/alvaro-federico-gianola.pdf" target="_blank" rel="noreferrer">
-              Ver CV en PDF
+              {t.contactCta}
             </a>
-            <span className="muted text-sm">Subi tu CV en public/cv/alvaro-federico-gianola.pdf</span>
-            <span className="muted text-sm">Subi tu foto en public/images/perfil.jpg</span>
+            {t.contactHints.map((hint) => (
+              <span key={hint} className="muted text-sm">{hint}</span>
+            ))}
           </motion.div>
         </section>
       </section>
