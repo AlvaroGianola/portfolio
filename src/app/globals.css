@@ -45,6 +45,16 @@ body {
   scroll-margin-top: 6.5rem;
 }
 
+.accent-panel {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: linear-gradient(
+      155deg,
+      color-mix(in srgb, var(--accent) 12%, transparent),
+      transparent 58%
+    ),
+    color-mix(in srgb, var(--surface) 88%, transparent);
+}
+
 .site-header {
   position: fixed;
   top: 0;
@@ -155,6 +165,16 @@ body {
   background: color-mix(in srgb, var(--surface) 92%, transparent);
 }
 
+.accent-card {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: linear-gradient(
+      155deg,
+      color-mix(in srgb, var(--accent) 16%, transparent),
+      transparent 55%
+    ),
+    color-mix(in srgb, var(--surface) 92%, transparent);
+}
+
 .timeline-card {
   border-left: 3px solid color-mix(in srgb, var(--accent) 70%, transparent);
 }
@@ -227,23 +247,6 @@ body {
 .project-card {
   display: flex;
   flex-direction: column;
-}
-
-.project-media-placeholder {
-  width: 100%;
-  min-height: 12rem;
-  border-radius: 10px;
-  border: 1px dashed color-mix(in srgb, var(--accent) 45%, var(--border));
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--accent) 16%, transparent), transparent),
-    color-mix(in srgb, var(--surface) 88%, transparent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: var(--muted);
-  font-size: 0.95rem;
-  padding: 0.75rem;
 }
 
 .contact-link {

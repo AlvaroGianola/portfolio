@@ -125,11 +125,7 @@ const content = {
       "Gestion de proyectos IT",
     ],
     contactCta: "Ver CV en PDF",
-    contactHints: [
-      "Subi tu CV en public/cv/alvaro-federico-gianola.pdf",
-      "Subi tu foto en public/images/fotoLinkedin.jpg",
-      "Imagenes de proyectos: public/images/projects/",
-    ],
+
   },
   en: {
     nav: [
@@ -205,11 +201,7 @@ const content = {
       "IT project management",
     ],
     contactCta: "View Resume",
-    contactHints: [
-      "Upload your CV to public/cv/alvaro-federico-gianola.pdf",
-      "Upload your photo to public/images/fotoLinkedin.jpg",
-      "Project images folder: public/images/projects/",
-    ],
+
   },
 };
 
@@ -251,6 +243,10 @@ export default function Home() {
 
   const t = content[locale];
   const modeText = useMemo(() => (mode === "light" ? t.modeLight : t.modeDark), [mode, t.modeDark, t.modeLight]);
+  const resumeHref =
+    locale === "en"
+      ? "/cv/Resume_Alvaro_Gianola_Backend_Developer.pdf"
+      : "/cv/CV_Alvaro_Gianola_Backend_Developer.pdf";
 
   const toggleExperience = (id: ExperienceId) => {
     setOpenExperience((prev) => (prev === id ? null : id));
@@ -362,7 +358,7 @@ export default function Home() {
                 </span>
                 GitHub
               </a>
-              <a className="contact-link" href="/cv/CV_Alvaro_Gianola_Backend_Developer.pdf.pdf" target="_blank" rel="noreferrer">
+              <a className="contact-link" href={resumeHref} target="_blank" rel="noreferrer">
                 <span className="icon-wrap" aria-hidden="true">
                   <FiFileText />
                 </span>
@@ -469,8 +465,7 @@ export default function Home() {
             <h2 className="section-title">{t.projectsTitle}</h2>
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {t.projectCards.map((project) => (
-                <article key={project.title} className="mini-card project-card">
-                  <div className="project-media-placeholder">{project.placeholder}</div>
+                <article key={project.title} className="mini-card accent-card project-card">
                   <h3 className="card-title mt-3">{project.title}</h3>
                   <p className="muted text-sm">{project.desc}</p>
                 </article>
@@ -519,13 +514,13 @@ export default function Home() {
             transition={{ duration: 0.45, delay: 0.3 }}
             className="grid gap-4 md:grid-cols-2"
           >
-            <article className="mini-card">
+            <article className="mini-card accent-card">
               <h2 className="section-title">{t.educationTitle}</h2>
               <p className="mt-2 font-medium">{t.educationDegree}</p>
               <p className="muted">{t.educationSchool}</p>
             </article>
 
-            <article className="mini-card">
+            <article className="mini-card accent-card">
               <h2 className="section-title">{t.skillsTitle}</h2>
               <ul className="muted mt-3 list-disc pl-5 text-base leading-relaxed">
                 {t.skills.map((skill) => (
@@ -544,12 +539,10 @@ export default function Home() {
             transition={{ duration: 0.45, delay: 0.4 }}
             className="flex flex-wrap items-center gap-3"
           >
-            <a className="btn btn-primary" href="/cv/CV_Alvaro_Gianola_Backend_Developer.pdf" target="_blank" rel="noreferrer">
+            <a className="btn btn-primary" href={resumeHref} target="_blank" rel="noreferrer">
               {t.contactCta}
             </a>
-            {t.contactHints.map((hint) => (
-              <span key={hint} className="muted text-sm">{hint}</span>
-            ))}
+
           </motion.div>
         </section>
       </section>
