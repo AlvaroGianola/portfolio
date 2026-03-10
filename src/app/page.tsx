@@ -3,10 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { IconType } from "react-icons";
-import { FiFileText, FiGithub, FiLinkedin, FiMail } from "react-icons/fi";
+import { FiDatabase, FiFileText, FiGithub, FiLinkedin, FiMail, FiMonitor, FiMoon, FiSun } from "react-icons/fi";
 import {
   SiC,
-  SiCss3,
+  SiCss,
   SiDocker,
   SiExpress,
   SiGit,
@@ -15,7 +15,6 @@ import {
   SiHtml5,
   SiJavascript,
   SiLinux,
-  SiMicrosoftsqlserver,
   SiMongodb,
   SiMysql,
   SiNodedotjs,
@@ -23,7 +22,6 @@ import {
   SiPython,
   SiReact,
   SiTypescript,
-  SiWindows,
 } from "react-icons/si";
 
 type ExperienceId = "esg" | "freelance";
@@ -36,20 +34,20 @@ const techIcons: Record<string, IconType> = {
   JavaScript: SiJavascript,
   TypeScript: SiTypescript,
   HTML: SiHtml5,
-  CSS: SiCss3,
+  CSS: SiCss,
   React: SiReact,
   "Node.js": SiNodedotjs,
   "Express.js": SiExpress,
   MongoDB: SiMongodb,
   MySQL: SiMysql,
-  SQLServer: SiMicrosoftsqlserver,
+  SQLServer: FiDatabase,
   Git: SiGit,
   GitHub: SiGithub,
   Docker: SiDocker,
   Postman: SiPostman,
   "MongoDB Compass": SiMongodb,
   "Linux (Ubuntu, MSYS2)": SiLinux,
-  Windows: SiWindows,
+  Windows: FiMonitor,
 };
 
 const content = {
@@ -216,9 +214,11 @@ const content = {
 };
 
 export default function Home() {
+  const emailAddress = "alvarogianolao@gmail.com";
   const [mode, setMode] = useState<"light" | "dark">("light");
   const [locale, setLocale] = useState<Locale>("es");
   const [openExperience, setOpenExperience] = useState<ExperienceId | null>("esg");
+  const [emailCopied, setEmailCopied] = useState(false);
 
   useEffect(() => {
     const savedMode = localStorage.getItem("mode");
@@ -256,6 +256,18 @@ export default function Home() {
     setOpenExperience((prev) => (prev === id ? null : id));
   };
 
+  const handleEmailClick = async (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    try {
+      await navigator.clipboard.writeText(emailAddress);
+      setEmailCopied(true);
+      window.setTimeout(() => setEmailCopied(false), 1800);
+    } catch {
+      // Clipboard may be blocked; continue with mailto fallback.
+    }
+    window.location.href = `mailto:${emailAddress}`;
+  };
+
   return (
     <main className="app-shell relative">
       <motion.header
@@ -290,6 +302,7 @@ export default function Home() {
                 aria-pressed={mode === "light"}
                 title={t.modeLight}
               >
+                <FiSun aria-hidden="true" />
                 {t.modeLight}
               </button>
               <button
@@ -298,6 +311,7 @@ export default function Home() {
                 aria-pressed={mode === "dark"}
                 title={t.modeDark}
               >
+                <FiMoon aria-hidden="true" />
                 {t.modeDark}
               </button>
             </div>
@@ -317,7 +331,7 @@ export default function Home() {
             <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
               <div>
                 <h1 className="text-[clamp(2.2rem,6vw,5.4rem)] font-bold leading-[1.02] tracking-tight">
-                  Alvaro Federico <span className="accent">Gianola</span>
+                  Alvaro Federico <span className="accent">Gianola Otamendi</span>
                 </h1>
                 <p className="muted mt-4 max-w-3xl text-[clamp(1.05rem,2.1vw,1.45rem)] leading-relaxed">{t.heroText}</p>
               </div>
@@ -330,11 +344,11 @@ export default function Home() {
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <a className="contact-link" href="mailto:alvarogianolao@gmail.com">
+              <a className="contact-link" href={`mailto:${emailAddress}`} onClick={handleEmailClick} title={emailAddress}>
                 <span className="icon-wrap" aria-hidden="true">
                   <FiMail />
                 </span>
-                Email
+                {emailCopied ? (locale === "en" ? "Email copied" : "Email copiado") : "Email"}
               </a>
               <a className="contact-link" href="https://www.linkedin.com/in/alvaro-federico-gianola-otamendi/" target="_blank" rel="noreferrer">
                 <span className="icon-wrap" aria-hidden="true">
@@ -352,7 +366,7 @@ export default function Home() {
                 <span className="icon-wrap" aria-hidden="true">
                   <FiFileText />
                 </span>
-                {locale === "en" ? "Resume" : "CV PDF"}
+                {locale === "en" ? "Resume" : "Curriculum Vitae"}
               </a>
             </div>
           </motion.div>
