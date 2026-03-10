@@ -362,7 +362,7 @@ export default function Home() {
                 </span>
                 GitHub
               </a>
-              <a className="contact-link" href="/cv/alvaro-federico-gianola.pdf" target="_blank" rel="noreferrer">
+              <a className="contact-link" href="/cv/CV_Alvaro_Gianola_Backend_Developer.pdf.pdf" target="_blank" rel="noreferrer">
                 <span className="icon-wrap" aria-hidden="true">
                   <FiFileText />
                 </span>
@@ -544,7 +544,7 @@ export default function Home() {
             transition={{ duration: 0.45, delay: 0.4 }}
             className="flex flex-wrap items-center gap-3"
           >
-            <a className="btn btn-primary" href="/cv/alvaro-federico-gianola.pdf" target="_blank" rel="noreferrer">
+            <a className="btn btn-primary" href="/cv/CV_Alvaro_Gianola_Backend_Developer.pdf" target="_blank" rel="noreferrer">
               {t.contactCta}
             </a>
             {t.contactHints.map((hint) => (
