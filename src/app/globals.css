@@ -119,6 +119,7 @@ body {
 
 .mode-btn:hover {
   color: var(--foreground);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 
 .mode-btn.is-active {
@@ -163,10 +164,15 @@ body {
   border-radius: 14px;
   padding: 1.2rem;
   background: color-mix(in srgb, var(--surface) 92%, transparent);
+  transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
 }
 
-.accent-card {
-  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+.clickable-card {
+  cursor: pointer;
+}
+
+.clickable-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
   background: linear-gradient(
       155deg,
       color-mix(in srgb, var(--accent) 16%, transparent),
@@ -177,6 +183,17 @@ body {
 
 .timeline-card {
   border-left: 3px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  transition: border-color 180ms ease, background 180ms ease;
+}
+
+.timeline-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 75%, var(--border));
+  background: linear-gradient(
+      155deg,
+      color-mix(in srgb, var(--accent) 16%, transparent),
+      transparent 55%
+    ),
+    color-mix(in srgb, var(--surface) 92%, transparent);
 }
 
 .accordion-trigger {
@@ -186,6 +203,13 @@ body {
   justify-content: space-between;
   text-align: left;
   gap: 1rem;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background 160ms ease;
+}
+
+.accordion-trigger:hover {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 
 .accordion-chevron {
@@ -247,6 +271,15 @@ body {
 .project-card {
   display: flex;
   flex-direction: column;
+}
+
+.project-link {
+  transition: border-color 180ms ease, transform 180ms ease;
+}
+
+.project-link:hover {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+  transform: translateY(-1px);
 }
 
 .contact-link {

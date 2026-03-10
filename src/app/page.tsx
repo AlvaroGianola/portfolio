@@ -88,20 +88,24 @@ const content = {
     projectsTitle: "Proyectos academicos y profesionales",
     projectCards: [
       {
-        placeholder: "Placeholder Metamapa de Hechos",
-        title: "Metamapa de Hechos",
-        desc: "Plataforma colaborativa de mapeo de acontecimientos con gestion de datos, estadisticas y visualizacion web.",
+        placeholder: "Placeholder BirBnb",
+        title: "BirBnb (clon AirBnb)",
+        desc: "Aplicacion web de reservas con registro de propiedades, filtros de busqueda, notificaciones y despliegue en la nube.",
+        href: "https://github.com/AlvaroGianola/Birbnb",
       },
       {
         placeholder: "Placeholder Sistema Operativo Distribuido",
         title: "Sistema Operativo Distribuido",
         desc: "Simulador de sistema operativo con modulos Kernel, CPU, Memoria, IO y Swap comunicados por HTTP.",
+        href: "https://github.com/AlvaroGianola/sistemaOperativo-2025",
       },
       {
-        placeholder: "Placeholder BirBnb",
-        title: "BirBnb (clon AirBnb)",
-        desc: "Aplicacion web de reservas con registro de propiedades, filtros de busqueda, notificaciones y despliegue en la nube.",
+        placeholder: "Placeholder Metamapa de Hechos",
+        title: "Metamapa de Hechos",
+        desc: "Plataforma colaborativa de mapeo de acontecimientos con gestion de datos, estadisticas y visualizacion web.",
       },
+      
+
     ],
     stackTitle: "Stack",
     stackGroups: [
@@ -163,21 +167,25 @@ const content = {
     ],
     projectsTitle: "Academic and professional projects",
     projectCards: [
-      {
-        placeholder: "Placeholder Metamapa de Hechos",
-        title: "Metamapa de Hechos",
-        desc: "Collaborative event-mapping platform with data management, analytics, and web visualization.",
+    {
+        placeholder: "Placeholder BirBnb",
+        title: "BirBnb (AirBnb clone)",
+        desc: "Booking web app with property listing, filtered search, notifications, and cloud deployment.",
+        href: "https://github.com/AlvaroGianola/Birbnb",
       },
       {
         placeholder: "Placeholder Distributed OS",
         title: "Distributed Operating System",
         desc: "Operating system simulator with Kernel, CPU, Memory, IO and Swap modules connected over HTTP.",
+        href: "https://github.com/AlvaroGianola/sistemaOperativo-2025",
       },
       {
-        placeholder: "Placeholder BirBnb",
-        title: "BirBnb (AirBnb clone)",
-        desc: "Booking web app with property listing, filtered search, notifications, and cloud deployment.",
+        placeholder: "Placeholder Metamapa de Hechos",
+        title: "Metamapa de Hechos",
+        desc: "Collaborative event-mapping platform with data management, analytics, and web visualization.",
       },
+      
+
     ],
     stackTitle: "Stack",
     stackGroups: [
@@ -209,7 +217,7 @@ export default function Home() {
   const emailAddress = "alvarogianolao@gmail.com";
   const [mode, setMode] = useState<"light" | "dark">("light");
   const [locale, setLocale] = useState<Locale>("es");
-  const [openExperience, setOpenExperience] = useState<ExperienceId | null>("esg");
+  const [openExperience, setOpenExperience] = useState<ExperienceId | null>(null);
   const [emailCopied, setEmailCopied] = useState(false);
 
   useEffect(() => {
@@ -378,13 +386,21 @@ export default function Home() {
           >
             <h2 className="section-title">{t.experienceTitle}</h2>
 
-            <article className="mini-card timeline-card">
-              <button
-                className="accordion-trigger"
-                onClick={() => toggleExperience("esg")}
-                aria-expanded={openExperience === "esg"}
-                aria-controls="exp-esg-content"
-              >
+            <article
+              className="mini-card timeline-card clickable-card"
+              role="button"
+              tabIndex={0}
+              onClick={() => toggleExperience("esg")}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  toggleExperience("esg");
+                }
+              }}
+              aria-expanded={openExperience === "esg"}
+              aria-controls="exp-esg-content"
+            >
+              <div className="accordion-trigger">
                 <span>
                   <p className="muted text-sm">{t.esgPeriod}</p>
                   <h3 className="card-title mt-1">{t.esgTitle}</h3>
@@ -392,7 +408,7 @@ export default function Home() {
                 <span className={`accordion-chevron ${openExperience === "esg" ? "is-open" : ""}`} aria-hidden="true">
                   ▾
                 </span>
-              </button>
+              </div>
 
               <AnimatePresence initial={false}>
                 {openExperience === "esg" && (
@@ -415,13 +431,21 @@ export default function Home() {
               </AnimatePresence>
             </article>
 
-            <article className="mini-card timeline-card">
-              <button
-                className="accordion-trigger"
-                onClick={() => toggleExperience("freelance")}
-                aria-expanded={openExperience === "freelance"}
-                aria-controls="exp-freelance-content"
-              >
+            <article
+              className="mini-card timeline-card clickable-card"
+              role="button"
+              tabIndex={0}
+              onClick={() => toggleExperience("freelance")}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  toggleExperience("freelance");
+                }
+              }}
+              aria-expanded={openExperience === "freelance"}
+              aria-controls="exp-freelance-content"
+            >
+              <div className="accordion-trigger">
                 <span>
                   <p className="muted text-sm">{t.freePeriod}</p>
                   <h3 className="card-title mt-1">{t.freeTitle}</h3>
@@ -429,7 +453,7 @@ export default function Home() {
                 <span className={`accordion-chevron ${openExperience === "freelance" ? "is-open" : ""}`} aria-hidden="true">
                   ▾
                 </span>
-              </button>
+              </div>
 
               <AnimatePresence initial={false}>
                 {openExperience === "freelance" && (
@@ -464,12 +488,25 @@ export default function Home() {
           >
             <h2 className="section-title">{t.projectsTitle}</h2>
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {t.projectCards.map((project) => (
-                <article key={project.title} className="mini-card accent-card project-card">
-                  <h3 className="card-title mt-3">{project.title}</h3>
-                  <p className="muted text-sm">{project.desc}</p>
-                </article>
-              ))}
+              {t.projectCards.map((project) =>
+                project.href ? (
+                  <a
+                    key={project.title}
+                    href={project.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mini-card project-card project-link clickable-card"
+                  >
+                    <h3 className="card-title mt-3">{project.title}</h3>
+                    <p className="muted text-sm">{project.desc}</p>
+                  </a>
+                ) : (
+                  <article key={project.title} className="mini-card project-card">
+                    <h3 className="card-title mt-3">{project.title}</h3>
+                    <p className="muted text-sm">{project.desc}</p>
+                  </article>
+                ),
+              )}
             </div>
           </motion.div>
         </section>
@@ -514,13 +551,13 @@ export default function Home() {
             transition={{ duration: 0.45, delay: 0.3 }}
             className="grid gap-4 md:grid-cols-2"
           >
-            <article className="mini-card accent-card">
+            <article className="mini-card">
               <h2 className="section-title">{t.educationTitle}</h2>
               <p className="mt-2 font-medium">{t.educationDegree}</p>
               <p className="muted">{t.educationSchool}</p>
             </article>
 
-            <article className="mini-card accent-card">
+            <article className="mini-card">
               <h2 className="section-title">{t.skillsTitle}</h2>
               <ul className="muted mt-3 list-disc pl-5 text-base leading-relaxed">
                 {t.skills.map((skill) => (
